@@ -1,22 +1,27 @@
 package empresa;
 
 public class Empregado extends Pessoa{
-	private ChefeMaior superior;
+	private Chefe superior;
 
-	public Empregado(String nome, ChefeMaior superior) {
+	public Empregado(String nome, Chefe superior) {
 		super(nome);
 		this.superior = superior;
 		this.superior.addSubordinado(this);
 	}
 
-	public ChefeMaior getSuperior() {
-		return superior;
+	public Chefe getSuperior() {
+		return this.superior;
 	}
 
 	@Override
 	public String getListaEmpregadosAssociados() {
-		String retorno = "[ Superior de: " + this.getNome() + this.getSuperior().getNome();
+		String retorno = "Trabalhador: " + this.getNome();
+		retorno += "\nSuperior: " + this.getSuperior().getNome();
 		retorno += "\n---------";
+		if(this.getSuperior().getSuperior() != null){
+			System.out.println(this.getSuperior().getListaEmpregadosAssociados());
+		}
+		
 		return retorno;
 	}
 }

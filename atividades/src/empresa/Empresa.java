@@ -1,13 +1,13 @@
 package empresa;
 
 public class Empresa {
-	private ChefeMaior maior;
+	private Chefe maior;
 	
 	public Empresa() {
-		this.maior = new ChefeMaior("Antonio Carlos Pereira");
+		this.maior = new Chefe("Antonio Carlos Pereira");
 	}
 
-	public ChefeMaior getMaior() {
-		return maior;
+	public Chefe getMaior() {
+		return this.maior;
 	}
 }
