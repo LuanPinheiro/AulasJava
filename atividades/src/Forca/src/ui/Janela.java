@@ -64,76 +64,94 @@ public class Janela {
 		JRadioButton btnFilmes = new JRadioButton("Filmes");
 		btnFilmes.setActionCommand("Filmes");
 		btnFilmes.setSelected(true);
-		btnFilmes.setBounds(151, 7, 109, 23);
+		btnFilmes.setBounds(141, 19, 103, 21);
 		panelCategoria.add(btnFilmes);
 		
 		JRadioButton btnNovelas = new JRadioButton("Novelas");
 		btnNovelas.setActionCommand("Novelas");
-		btnNovelas.setBounds(151, 61, 109, 23);
+		btnNovelas.setBounds(141, 73, 103, 21);
 		panelCategoria.add(btnNovelas);
 		
 		JRadioButton btnCarros = new JRadioButton("Carros");
 		btnCarros.setActionCommand("Carros");
-		btnCarros.setBounds(151, 116, 109, 23);
+		btnCarros.setBounds(141, 130, 103, 21);
 		panelCategoria.add(btnCarros);
 		
 		final ButtonGroup categorias = new ButtonGroup();
 		
-		final JButton btnIniciar = new JButton("Iniciar");
-		btnIniciar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				forca.setCategoria(categorias.getSelection().getActionCommand());
-				forca.setPalavra();
-				// Reiniciar o panel do jogo
-				JOptionPane.showMessageDialog(btnIniciar, "Novo jogo iniciado", "INÍCIO", 1);
-			}
-		});
-		btnIniciar.setBounds(159, 184, 89, 23);
-		panelCategoria.add(btnIniciar);
+		
 		
 		JPanel panelJogo = new JPanel();
 		tabbedPane.addTab("Jogo", null, panelJogo, null);
 		panelJogo.setLayout(null);
 		
 		JLabel lbImagem = new JLabel("INSIRA IMAGEM AQUI");
-		lbImagem.setBounds(28, 30, 131, 14);
+		lbImagem.setBounds(21, 25, 120, 50);
 		panelJogo.add(lbImagem);
 		
 		JLabel lbLetra = new JLabel("Letra:");
-		lbLetra.setBounds(227, 30, 46, 14);
+		lbLetra.setBounds(205, 44, 45, 13);
 		panelJogo.add(lbLetra);
 		
 		txtLetra = new JTextField();
-		txtLetra.setBounds(283, 27, 46, 20);
+		txtLetra.setEditable(false);
+		txtLetra.setBounds(260, 41, 59, 19);
 		panelJogo.add(txtLetra);
 		txtLetra.setColumns(10);
 		
-		final JButton btnTentativa = new JButton("Tentativa");
-		btnTentativa.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				String letra = txtLetra.getText();
-				
-				if(forca.letraEmPalavra(letra) == -1) {
-					JOptionPane.showMessageDialog(btnTentativa, "Letra já tentada anteriormente", null, 0);
-					return;
-				}
-				forca.addTentativa(letra);
-			}
-		});
-		btnTentativa.setBounds(240, 78, 89, 23);
-		panelJogo.add(btnTentativa);
-		
-		JLabel lbTentativas = new JLabel("");
-		lbTentativas.setBounds(227, 124, 157, 58);
+		final JLabel lbTentativas = new JLabel("Tentativas:");
+		lbTentativas.setBounds(205, 146, 196, 13);
 		panelJogo.add(lbTentativas);
 		
-		JLabel lbPalavra = new JLabel("");
-		lbPalavra.setBounds(10, 134, 46, 14);
+		final JLabel lbPalavra = new JLabel(" ");
+		lbPalavra.setBounds(21, 158, 160, 13);
 		panelJogo.add(lbPalavra);
 		
-		
 		categorias.add(btnCarros);
-		categorias.add(btnFilmes);
 		categorias.add(btnNovelas);
+		categorias.add(btnFilmes);
+		
+		final JButton btnIniciar = new JButton("Iniciar");
+		btnIniciar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				forca.setCategoria(categorias.getSelection().getActionCommand());
+				forca.setPalavra();
+				forca.setErros(0);
+				
+				lbPalavra.setText(forca.gerarUnderline());
+				lbTentativas.setText("");
+				txtLetra.setEditable(true);
+				JOptionPane.showMessageDialog(btnIniciar, "Jogo Iniciado");
+			}
+		});
+		btnIniciar.setBounds(134, 186, 85, 21);
+		panelCategoria.add(btnIniciar);
+		
+		final JButton btnTentativa = new JButton("Tentar");
+		btnTentativa.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String letra = txtLetra.getText().toUpperCase();
+				if(!lbTentativas.getText().equalsIgnoreCase(" ")) {
+					if(lbTentativas.getText().contains(letra)) {
+						JOptionPane.showMessageDialog(btnTentativa, "Tentativa já realizada");
+						return;
+					}
+				}
+				lbTentativas.setText(forca.addTentativa(letra, lbTentativas.getText()));
+				lbPalavra.setText(forca.alteraUnderline(lbPalavra.getText(), letra));
+				
+				if(!lbPalavra.getText().contains("_")) {
+					JOptionPane.showMessageDialog(btnTentativa, "PARABÉNS VOCÊ VENCEU");
+					txtLetra.setEditable(false);
+				}
+				
+				if(forca.getErros() == 6) {
+					txtLetra.setEditable(false);
+					JOptionPane.showMessageDialog(btnTentativa, "VOCÊ PERDEU, INICIE O JOGO NOVAMENTE");
+				}
+			}
+		});
+		btnTentativa.setBounds(234, 87, 85, 21);
+		panelJogo.add(btnTentativa);
 	}
 }

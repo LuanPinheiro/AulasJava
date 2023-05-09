@@ -4,22 +4,18 @@ import java.util.*;
 
 public class Forca {
 	private String categoria;
-	private String[] filmes = {"Spartacus", "Thor", "Clube da Luta", "Meninas Malvadas"};
-	private String[] novelas = {"Avenida Brasil", "Chocolate com Pimenta", "Carrossel", "Pantanal"};
+	private String[] filmes = {"Spartacus", "Meninas Malvadas", "Thor", "Clube da Luta"};
+	private String[] novelas = {"Avenida Brasil", "Chocolate com Pimenta", "Pantanal", ""};
 	private String[] carros = {"Uno", "Gol", "Ferrari", "Corolla"};
 	private String palavra;
-	private List<String> tentativas;
+	private int erros;
 	
 	public Forca() {
-		this.tentativas = new ArrayList<String>();
+		erros = 0;
 	}
 
 	public String getCategoria() {
 		return categoria;
-	}
-
-	public void setCategoria(String categoria) {
-		this.categoria = categoria;
 	}
 
 	public String[] getFilmes() {
@@ -34,37 +30,66 @@ public class Forca {
 		return carros;
 	}
 
-	public List<String> getTentativas() {
-		return tentativas;
-	}
-	
-	public void addTentativa(String tentativa) {
-		this.tentativas.add(tentativa);
-	}
-	
 	public String getPalavra() {
 		return palavra;
+	}
+	
+	public void setCategoria(String categoria) {
+		this.categoria = categoria;
+	}
+	
+	public void setErros(int erros) {
+		this.erros = erros;
+	}
+	
+	public int getErros() {
+		return erros;
 	}
 	
 	public void setPalavra() {
 		Random rand = new Random();
 		int pos = rand.nextInt(4);
-		
 		switch(categoria) {
-			case "Filmes": palavra = filmes[pos]; break;
-			case "Novelas": palavra = novelas[pos]; break; 
-			case "Carros": palavra = carros[pos]; break; 
-		}
+			case "Filmes": palavra = filmes[pos].toUpperCase(); break;
+			case "Novelas": palavra = novelas[pos].toUpperCase(); break;
+			case "Carros": palavra = carros[pos].toUpperCase(); break;
+ 		}
 	}
 	
-	public int letraEmPalavra(String letra) {
-		if(this.tentativas.contains(letra)) {
-			return -1;
-		}
-		if(this.palavra.contains(letra)) {
-			return 1;
+	public String addTentativa(String tentativa, String tentativasRealizadas) {
+		tentativasRealizadas += " " + tentativa.toUpperCase();
+		return tentativasRealizadas;
+	}
+	
+	public String gerarUnderline() {
+		String underline = "";
+		
+		for (int i = 0; i < palavra.length(); i++) {
+			if(palavra.charAt(i) != ' ') {
+				underline += "_";
+			}
+			else {
+				underline += " ";
+			}
 		}
 		
-		return 0;
+		return underline;
 	}
+	
+	public String alteraUnderline(String underline, String letra) {
+		String palavraOriginal = palavra;
+		char letraChar = letra.charAt(0);
+		StringBuilder sb = new StringBuilder(underline);
+		for(int i = 0; i < underline.length(); i++) {
+			if(palavra.charAt(i) == letraChar) {
+				sb.setCharAt(i, letraChar);
+			}
+		}
+		palavra.replaceAll(letra, ";");
+		if(palavra.equalsIgnoreCase(palavraOriginal)) {
+			erros++;
+		}
+		return sb.toString();
+	}
+	
 }
